@@ -62,6 +62,7 @@ public class MySQLUtil {
 	public static void restoreAllStockDataToDB(String year,
 			String month, String date){
 		String stockID;
+		//TO-DO get stock id list and execute storage
 	}
 
 	public static void main(String[] args) throws IOException, SAXException {
