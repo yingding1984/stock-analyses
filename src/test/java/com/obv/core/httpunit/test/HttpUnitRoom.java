@@ -18,21 +18,30 @@ import com.meterware.httpunit.WebTable;
  * 
  */
 public class HttpUnitRoom {
+	// structure of priceVolumeResults-- 1 Date 2 Open Price 5 Close Price 6
+	// Volumn of day
 
-	public static ArrayList<String> getPriceVolume() throws IOException,
-			SAXException {
+	public static ArrayList<String> getStockTradeDetailFromDate(
+			String _stockID, String _year, String _month, String _date)
+			throws IOException, SAXException {
+
+		String monthOfYahoo = getRealMonth(_month);
 		ArrayList<String> priceVolumeResults = new ArrayList<String>();
 		HttpUnitOptions.setScriptingEnabled(false);
 		WebConversation wc = new WebConversation();
 		WebResponse response = wc
-				.getResponse("http://finance.yahoo.com/q/hp?s=002243.SZ&a=05&b=17&c=2013&d=08&e=4&f=2013&g=d");
+				.getResponse("http://finance.yahoo.com/q/hp?s=" + _stockID
+						+ ".SZ&a=" + monthOfYahoo + "&b=" + _date + "&c="
+						+ _year + "&d=08&e=4&f=" + _year + "&g=d");
+
 		WebTable[] table = response.getTables();
 
 		String infoTable = table[4].getTableCell(1, 0).getText()
 				.replaceAll(",", "");
 		String[] strlines = infoTable.split("\n");
 		for (int i = 0; i < strlines.length; i++) {
-			if (strlines[i].contains("2013")) {
+			System.out.println(strlines[i]);
+			if (strlines[i].contains(_year)) {
 				priceVolumeResults.add(strlines[i]);
 			}
 		}
@@ -40,7 +49,6 @@ public class HttpUnitRoom {
 		for (int i = 0; i < priceVolumeResults.size(); i++) {
 
 			String recordLine = priceVolumeResults.get(i);
-			// System.out.println(priceVolumeResults.get(i));
 			String[] recordColumns = recordLine.split("\\|");
 			System.out.println(i + " row data is : Date:'" + recordColumns[1]
 					+ "' Open:'" + recordColumns[2] + "' High:'"
@@ -49,24 +57,20 @@ public class HttpUnitRoom {
 					+ recordColumns[6] + "' ");
 		}
 
-		/*
-		 * String recordLine = priceVolumeResults.get(0); // String record =
-		 * recordLine.replaceAll(" ", ""); String[] recordColumns =
-		 * recordLine.split("\\|"); for (int i = 0; i < recordColumns.length;
-		 * i++) { if (i != 1) recordColumns[i] =
-		 * recordColumns[i].replaceAll(" ", "");
-		 * System.out.println(recordColumns[i]); }
-		 */
 		return priceVolumeResults;
 	}
 
-	public static void main(String[] args) throws IOException, SAXException {
-		getPriceVolume();
-		// String s = "|111|2|3|4";
-		// String[] s_arr = s.split("111");
-		// for(int i = 0; i <s_arr.length;i++){
-		// System.out.println(s_arr[i]);
-		// }
+	private static String getRealMonth(String _month) {
+		String monthOfYahooStr = null;
+		Integer monthOfYahoo = Integer.parseInt(_month);
+		monthOfYahoo = monthOfYahoo - 1;
+		if (monthOfYahoo <= 10) {
+			monthOfYahooStr = "0" + monthOfYahoo;
+		} else {
+			monthOfYahooStr = monthOfYahoo.toString();
+		}
+		return monthOfYahooStr;
+
 	}
 
 }
