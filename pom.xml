@@ -4,7 +4,7 @@
 	<groupId>stock_obv</groupId>
 	<artifactId>stock_obv</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 	<dependencies>
 
 		<dependency>
